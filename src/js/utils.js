@@ -21,15 +21,22 @@ export function generateUUID() {
   });
 };
 
-export function bringMemoToTop(selectedMemo) {
-    const memos = document.getElementsByClassName("momo");
-    let memoArray = []
+export function bringActiveMemoToTop() {
+  let activeMemo;
+  const memos = [...document.getElementsByClassName("memo")];
+  const board = document.getElementById("board");
+  const fragment = document.createDocumentFragment();
 
-    for (const memo of memos) {
-        if(memo === selectedMemo) {
-            console.log("Found the memo");
-            continue;
-        }
-        memoArray.push(memo);
+  board.innerHTML = null;
+
+  for (const memo of memos) {
+    if (memo.classList.contains("active")) {
+      activeMemo = memo;
+      continue;
     }
+    fragment.append(memo);
+  }
+
+  fragment.append(activeMemo);
+  board.append(fragment);
 };

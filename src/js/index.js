@@ -1,5 +1,5 @@
 import { GRID_SIZE, MARGIN, DEFAULT_MEMO } from "./globals";
-import { snapToGrid, confirm, generateUUID, getLocalStorageItem, setLocalStorageItem } from "./utils";
+import { snapToGrid, confirm, generateUUID, getLocalStorageItem, setLocalStorageItem, bringActiveMemoToTop } from "./utils";
 
 import "../sass/index.scss";
 
@@ -34,10 +34,13 @@ function createMemo(id, text, position, size) {
   const memo = document.createElement("div");
   memo.setAttribute("data-id", id);
   memo.classList.add("memo");
+  memo.classList.add("active");
   memo.style.top = `${position.top}px`;
   memo.style.left = `${position.left}px`;
   memo.style.width = `${size.width}px`;
   memo.style.height = `${size.height}px`;
+
+  bringActiveMemoToTop();
 
   const textarea = document.createElement("textarea");
   textarea.classList.add("input");
@@ -47,7 +50,10 @@ function createMemo(id, text, position, size) {
 
   if (text) { textarea.value = text; ; }
 
-  textarea.addEventListener("focus", function (e) { e.target.classList.add("active"); });
+  textarea.addEventListener("focus", function (e) {
+    e.target.classList.add("active");
+    bringActiveMemoToTop();
+  });
   textarea.addEventListener("blur", function (e) { e.target.classList.remove("active"); });
   textarea.addEventListener("input", function (e) {
     const memos = getLocalStorageItem("manifest_memos");
@@ -84,6 +90,8 @@ function handleMemoDragStart(e) {
 
   activeMemo = e.target.parentNode;
   activeMemo.classList.add("active");
+
+  bringActiveMemoToTop();
 
   e.target.style.backgroundColor = "rgba(0, 0, 0, 0.05)";
   e.target.style.cursor = "grabbing";
@@ -169,6 +177,8 @@ function handleMemoResizeStart(e) {
 
   activeMemo = e.target.parentNode;
   activeMemo.classList.add("active");
+
+  bringActiveMemoToTop();
 
   document.body.style.cursor = "nw-resize";
 
