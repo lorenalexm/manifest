@@ -1,5 +1,5 @@
 import { GRID_SIZE, MARGIN, DEFAULT_MEMO } from "./globals";
-import { snapToGrid, confirm, generateUUID, getLocalStorageItem, setLocalStorageItem, decreaseAllMemoIndexes } from "./utils";
+import { snapToGrid, confirm, generateUUID, getLocalStorageItem, setLocalStorageItem } from "./utils";
 
 import "../sass/index.scss";
 
@@ -9,7 +9,6 @@ let main, canvas, board, selection;
 let currentMouse, currentSize;
 
 const dragIndicatorIndex = "99999";
-const maximumMemoIndex = "99998";
 
 /*
   Generic Event Handlers
@@ -39,7 +38,6 @@ function createMemo(id, text, position, size) {
   memo.style.left = `${position.left}px`;
   memo.style.width = `${size.width}px`;
   memo.style.height = `${size.height}px`;
-  memo.style.zIndex = maximumMemoIndex;
 
   const textarea = document.createElement("textarea");
   textarea.classList.add("input");
@@ -49,14 +47,7 @@ function createMemo(id, text, position, size) {
 
   if (text) { textarea.value = text; ; }
 
-  textarea.addEventListener("focus", function (e) {
-    e.target.classList.add("active");
-
-    decreaseAllMemoIndexes();
-
-    activeMemo = e.target.parentNode;
-    activeMemo.style.zIndex = maximumMemoIndex;
-  });
+  textarea.addEventListener("focus", function (e) { e.target.classList.add("active"); });
   textarea.addEventListener("blur", function (e) { e.target.classList.remove("active"); });
   textarea.addEventListener("input", function (e) {
     const memos = getLocalStorageItem("manifest_memos");
@@ -91,11 +82,8 @@ function createMemo(id, text, position, size) {
 function handleMemoDragStart(e) {
   e.preventDefault();
 
-  decreaseAllMemoIndexes();
-
   activeMemo = e.target.parentNode;
   activeMemo.classList.add("active");
-  activeMemo.style.zIndex = maximumMemoIndex;
 
   e.target.style.backgroundColor = "rgba(0, 0, 0, 0.05)";
   e.target.style.cursor = "grabbing";
@@ -179,11 +167,8 @@ function handleMemoClose(e) {
 function handleMemoResizeStart(e) {
   e.preventDefault();
 
-  decreaseAllMemoIndexes();
-
   activeMemo = e.target.parentNode;
   activeMemo.classList.add("active");
-  activeMemo.style.zIndex = maximumMemoIndex;
 
   document.body.style.cursor = "nw-resize";
 

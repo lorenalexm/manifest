@@ -21,10 +21,15 @@ export function generateUUID() {
   });
 };
 
-export function decreaseAllMemoIndexes() {
-  const memos = document.getElementsByClassName("memo");
-  for (const memo of memos) {
-    let index = memo.style.zIndex;
-    memo.style.zIndex = --index;
-  }
+export function bringMemoToTop(selectedMemo) {
+    const memos = document.getElementsByClassName("momo");
+    let memoArray = []
+
+    for (const memo of memos) {
+        if(memo === selectedMemo) {
+            console.log("Found the memo");
+            continue;
+        }
+        memoArray.push(memo);
+    }
 };
